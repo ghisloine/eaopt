@@ -315,10 +315,12 @@ func (mod ModMutationOnly) Apply(pop *Population) error {
 	for i, indi := range pop.Individuals {
 		var mutant = indi.Clone(pop.RNG)
 		mutant.Mutate(pop.RNG)
-		err := mutant.Evaluate()
-		if err != nil {
-			return err
-		}
+		// Evaluation in here is single thread,
+		// If it is done in ga.go it will be multithread.
+		// err := mutant.Evaluate()
+		// if err != nil {
+		// 	return err
+		// }
 		if !mod.Strict || (mod.Strict && mutant.Fitness < indi.Fitness) {
 			pop.Individuals[i] = mutant
 		}

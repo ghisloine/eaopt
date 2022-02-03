@@ -12,12 +12,12 @@ import (
 // pointer to the SPSO which generated it so that it can access the function to
 // minimize and the global best position.
 type Particle struct {
-	CurrentX []float64
-	CurrentY float64
-	BestX    []float64
-	BestY    float64
-	Velocity []float64
-	SPSO     *SPSO
+	CurrentX []float64 `json:"Flagset"`
+	CurrentY float64   `json:"-"`
+	BestX    []float64 `json:"-"`
+	BestY    float64   `json:"-"`
+	Velocity []float64 `json:"-"`
+	SPSO     *SPSO     `json:"-"`
 }
 
 // Evaluate the Particle by computing the value of the function at the current
@@ -64,7 +64,17 @@ func (p *Particle) Mutate(rng *rand.Rand) {
 	ss = math.Sqrt(ss)
 	for i, xi := range p.CurrentX {
 		p.Velocity[i] = p.SPSO.W*p.Velocity[i] + rX[i]/ss - xi
-		p.CurrentX[i] += p.Velocity[i]
+		// Buradaki current position'u degistirme vakti geldi.
+		random_value := rng.Float64()
+		sigmoid := 1.0 / (1.0 + math.Exp(-p.Velocity[i]))
+
+		if random_value < sigmoid {
+			p.CurrentX[i] = 1.0
+		} else {
+			p.CurrentX[i] = 0.0
+		}
+		// Binary Implementation Ends Here
+		// p.CurrentX[i] += p.Velocity[i]
 	}
 }
 

@@ -3,10 +3,17 @@ package eaopt
 import "math/rand"
 
 // InitUnifFloat64 generates random float64s x such that lower < x < upper.
+// Changed There
 func InitUnifFloat64(n uint, lower, upper float64, rng *rand.Rand) (floats []float64) {
 	floats = make([]float64, n)
 	for i := range floats {
-		floats[i] = lower + rng.Float64()*(upper-lower)
+		value := lower + rng.Float64()*(upper-lower)
+		if value <= 0.5 {
+			floats[i] = 0
+		} else {
+			floats[i] = 1
+		}
+
 	}
 	return
 }
